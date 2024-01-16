@@ -22,5 +22,4 @@ FPS offers two methodologies for proposal execution, as detailed in our [documen
 
 ### 2. Using Forge Test
 
-
 *For further assistance, please open an issue at [FPS Issues](https://github.com/solidity-labs-io/forge-proposal-simulator/issues/new)*
