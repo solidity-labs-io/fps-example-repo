@@ -2,8 +2,8 @@ pragma solidity ^0.8.0;
 
 import {MultisigProposal} from "@forge-proposal-simulator/proposals/MultisigProposal.sol";
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
-import {Vault} from "@examples/Vault.sol";
-import {MockToken} from "@examples/MockToken.sol";
+import {Vault} from "src/Vault.sol";
+import {MockToken} from "src/MockToken.sol";
 
 // MULTISIG_01 proposal deploys a Vault contract and an ERC20 token contract
 // Then the proposal transfers ownership of both Vault and ERC20 to the multisig address
