@@ -1,66 +1,27 @@
-## Foundry
+# Forge Proposal Simulator Example Repository
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## Overview
+This repository serves as a practical example for utilizing the [Forge Proposal Simulator](https://github.com/solidity-labs-io/forge-proposal-simulator). It is designed to guide users through the process of creating and executing proposals using FPS.
 
-Foundry consists of:
+## Getting Started
+Before diving into the repository, it is crucial to familiarize yourself with the FPS framework. Comprehensive details and instructions are available in our [documentation](https://docs.soliditylabs.io/forge-proposal-simulator/).
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Repository Structure
+The repository is structured into distinct folders, each with a designated function:
 
-## Documentation
+- `src`: This directory contains contracts intended for use in proposals. It is important to note that these contracts serve exclusively as examples and are not recommended for production deployment due to the absence of validation and audit process. The primary purpose of these contracts is to demonstrate deployment and protocol paramaters configuration through proposals.
+- `proposals`: Constains a variety of proposal contracts. Each contract in this folder is an extension of one of the [proposal types](https://docs.soliditylabs.io/forge-proposal-simulator/guides/) offered by FPS.
+- `scripts`: Contains a script for each proposal.
 
-https://book.getfoundry.sh/
 
-## Usage
+## Executing Proposals with FPS
+FPS offers two methodologies for proposal execution, as detailed in our [documentation](https://docs.soliditylabs.io/forge-proposal-simulator/):
 
-### Build
+### 1. Using Forge Scripts
+-  Run `forge script script/MultisigScript.s.sol:MultisigScript` to execute
+   [MULTISIG_01.sol](proposals/MULTISIG_01.sol) 
 
-```shell
-$ forge build
-```
+### 2. Using Forge Test
+- Detailed instructions for using `forge test` can be found in the [Foundry Book](https://book.getfoundry.sh/reference/forge/forge-test).
 
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+*For further assistance, please open an issue at [FPS Issues](https://github.com/solidity-labs-io/forge-proposal-simulator/issues/new)*
