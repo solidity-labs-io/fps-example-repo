@@ -2,7 +2,7 @@ pragma solidity ^0.8.0;
 
 import {Vault} from "@forge-proposal-simulator/examples/Vault.sol";
 import {MockToken} from "@forge-proposal-simulator/examples/MockToken.sol";
-import {MultisigPostProposalCheck} from "test/MultisigPostProposalCheck.sol";
+import {MultisigPostProposalCheck} from "./MultisigPostProposalCheck.sol";
 
 // @dev This test contract inherits MultisigPostProposalCheck, granting it
 // the ability to interact with state modifications effected by proposals

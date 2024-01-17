@@ -4,3 +4,6 @@
 [submodule "lib/forge-proposal-simulator"]
 	path = lib/forge-proposal-simulator
 	url = https://github.com/solidity-labs-io/forge-proposal-simulator
+[submodule "lib/openzeppelin-contracts"]
+	path = lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
