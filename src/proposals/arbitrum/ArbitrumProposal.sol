@@ -5,7 +5,13 @@ import {Vm} from "@forge-std/Vm.sol";
 import {console} from "@forge-std/console.sol";
 
 import {OZGovernorProposal} from "@forge-proposal-simulator/src/proposals/OZGovernorProposal.sol";
+import {
+    IGovernor,
+    IGovernorTimelockControl,
+    IGovernorVotes
+} from "@forge-proposal-simulator/src/interface/IGovernor.sol";
 import {ITimelockController} from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
+import {IVotes} from "@forge-proposal-simulator/src/interface/IVotes.sol";
 import {Address} from "@forge-proposal-simulator/utils/Address.sol";
 
 import {MockArbSys} from "src/mocks/arbitrum/MockArbSys.sol";
@@ -171,7 +177,7 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
     function simulate() public override {
         // First part of Arbitrum Governance proposal path follows the OZ
         // Governor with TimelockController extension
-        super.simulate();
+        _simulateGovernorProposal();
 
         // Second part of Arbitrum Governance proposal path is the proposal
         // settlement on the L1 network
@@ -254,5 +260,99 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
                 }
             }
         }
+    }
+
+    function _simulateGovernorProposal() internal {
+        address proposerAddress = address(1);
+        IVotes governanceToken =
+            IVotes(IGovernorVotes(address(governor)).token());
+        {
+            uint256 quorumVotes = governor.quorum(block.number - 1);
+            uint256 proposalThreshold = governor.proposalThreshold();
+            uint256 votingPower =
+                quorumVotes > proposalThreshold
+                ? quorumVotes
+                : proposalThreshold;
+            // Arbitrum's dynamic quorum can move after the synthetic delegation checkpoint.
+            votingPower *= 10;
+            deal(address(governanceToken), proposerAddress, votingPower);
+            vm.roll(block.number - 1);
+
+            vm.prank(proposerAddress);
+            governanceToken.delegate(proposerAddress);
+            vm.roll(block.number + 2);
+        }
+
+        bytes memory proposeCalldata = getCalldata();
+
+        vm.prank(proposerAddress);
+        bytes memory proposalData =
+            address(governor).functionCall(proposeCalldata);
+        uint256 returnedProposalId = abi.decode(proposalData, (uint256));
+
+        (
+            address[] memory targets,
+            uint256[] memory values,
+            bytes[] memory calldatas
+        ) = getProposalActions();
+
+        uint256 proposalId = governor.hashProposal(
+            targets,
+            values,
+            calldatas,
+            keccak256(abi.encodePacked(description()))
+        );
+
+        require(returnedProposalId == proposalId, "Proposal id mismatch");
+        require(
+            governor.state(proposalId) == IGovernor.ProposalState.Pending,
+            "Proposal not pending"
+        );
+
+        vm.roll(block.number + governor.votingDelay() + 1);
+
+        require(
+            governor.state(proposalId) == IGovernor.ProposalState.Active,
+            "Proposal not active"
+        );
+
+        vm.prank(proposerAddress);
+        governor.castVote(proposalId, 1);
+
+        vm.roll(block.number + governor.votingPeriod());
+
+        require(
+            governor.state(proposalId) == IGovernor.ProposalState.Succeeded,
+            "Proposal not succeeded"
+        );
+
+        governor.queue(
+            targets,
+            values,
+            calldatas,
+            keccak256(abi.encodePacked(description()))
+        );
+
+        require(
+            governor.state(proposalId) == IGovernor.ProposalState.Queued,
+            "Proposal not queued"
+        );
+
+        ITimelockController timelock = ITimelockController(
+            IGovernorTimelockControl(address(governor)).timelock()
+        );
+        vm.warp(block.timestamp + timelock.getMinDelay() + 1);
+
+        governor.execute(
+            targets,
+            values,
+            calldatas,
+            keccak256(abi.encodePacked(description()))
+        );
+
+        require(
+            governor.state(proposalId) == IGovernor.ProposalState.Executed,
+            "Proposal not executed"
+        );
     }
 }
