@@ -1,9 +1,5 @@
 name: "Run Latest Proposal"
 
-env:
-    FOUNDRY_PROFILE: "ci"
-    ARB_RPC_URL: ${{secrets.ARB_RPC_URL}}
-
 on: [pull_request]
 
 jobs:

@@ -2,10 +2,6 @@ name: "Arbitrum Integration Tests"
 
 on: [pull_request]
 
-env:
-    FOUNDRY_PROFILE: ci
-    ARB_RPC_URL: ${{secrets.ARB_RPC_URL}}
-
 jobs:
     check:
         strategy:
