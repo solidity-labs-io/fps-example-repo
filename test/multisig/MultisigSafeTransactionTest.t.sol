@@ -4,7 +4,7 @@ import {Test} from "@forge-std/Test.sol";
 
 import {Constants} from "@forge-proposal-simulator/utils/Constants.sol";
 import {MockCallOnlyMultisigProposal} from "./mocks/MockCallOnlyMultisigProposal.sol";
-import {MockMixedOperationMultisigProposal} from "./mocks/MockMixedOperationMultisigProposal.sol";
+import {MockDelegateCallMultisigProposal} from "./mocks/MockDelegateCallMultisigProposal.sol";
 import {MockMultiSend} from "./mocks/MockMultiSend.sol";
 import {MockSafeTarget} from "./mocks/MockSafeTarget.sol";
 
@@ -25,9 +25,9 @@ contract MultisigSafeTransactionTest is Test {
         assertEq(operation, Constants.DELEGATE_CALL);
     }
 
-    function test_mixedCallDelegateProposalUsesMultiSend() public {
+    function test_delegateCallProposalUsesMultiSend() public {
         MockSafeTarget target = new MockSafeTarget();
-        MockMixedOperationMultisigProposal proposal = new MockMixedOperationMultisigProposal(
+        MockDelegateCallMultisigProposal proposal = new MockDelegateCallMultisigProposal(
             makeAddr("multisig"), target, _delegateSlot(), bytes32(uint256(0x1234))
         );
 
@@ -41,9 +41,9 @@ contract MultisigSafeTransactionTest is Test {
         assertEq(operation, Constants.DELEGATE_CALL);
     }
 
-    function test_encodedMultiSendOperationBytesMatchDelegateOverride() public {
+    function test_encodedMultiSendOperationBytesUseProposalDelegateOverride() public {
         MockSafeTarget target = new MockSafeTarget();
-        MockMixedOperationMultisigProposal proposal = new MockMixedOperationMultisigProposal(
+        MockDelegateCallMultisigProposal proposal = new MockDelegateCallMultisigProposal(
             makeAddr("multisig"), target, _delegateSlot(), bytes32(uint256(0x1234))
         );
 
@@ -51,9 +51,9 @@ contract MultisigSafeTransactionTest is Test {
 
         bytes memory transactions = _decodeMultiSendTransactions(proposal.getCalldata());
 
-        assertEq(_operationAt(transactions, 0), Constants.CALL);
+        assertEq(_operationAt(transactions, 0), Constants.DELEGATE_CALL);
         assertEq(_operationAt(transactions, 1), Constants.DELEGATE_CALL);
-        assertEq(_operationAt(transactions, 2), Constants.CALL);
+        assertEq(_operationAt(transactions, 2), Constants.DELEGATE_CALL);
     }
 
     function test_simulationRestoresOriginalSafeBytecode() public {
@@ -61,8 +61,8 @@ contract MultisigSafeTransactionTest is Test {
         address multisig = makeAddr("multisig");
         bytes32 delegateSlot = _delegateSlot();
         bytes32 delegateValue = bytes32(uint256(0x1234));
-        MockMixedOperationMultisigProposal proposal =
-            new MockMixedOperationMultisigProposal(multisig, target, delegateSlot, delegateValue);
+        MockDelegateCallMultisigProposal proposal =
+            new MockDelegateCallMultisigProposal(multisig, target, delegateSlot, delegateValue);
 
         proposal.build();
 
@@ -73,8 +73,10 @@ contract MultisigSafeTransactionTest is Test {
 
         proposal.simulate();
 
-        assertEq(target.callSender(), multisig);
-        assertEq(target.callNumber(), 22);
+        assertEq(target.callSender(), address(0));
+        assertEq(target.callNumber(), 0);
+        assertEq(vm.load(multisig, bytes32(uint256(0))), bytes32(uint256(uint160(multisig))));
+        assertEq(vm.load(multisig, bytes32(uint256(1))), bytes32(uint256(22)));
         assertEq(vm.load(multisig, delegateSlot), delegateValue);
         assertEq(keccak256(multisig.code), keccak256(originalBytecode));
     }

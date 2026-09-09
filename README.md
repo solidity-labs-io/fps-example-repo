@@ -24,7 +24,7 @@ Contains a script for deploying each proposal.
 
 -   `MultisigPostProposalCheck.sol`: Base contract for multisig integration tests. Responsible for deploying, executing proposal contracts and updating addresses object.
 -   `MultisigProposalIntegrationTest.t.sol`: Integration test for [MULTISIG_01.sol](proposals/MULTISIG_01.sol), inheriting from `MultisigPostProposalCheck.sol`.
--   Multisig proposal calldata is Safe `multiSend(bytes)` calldata. Use `getSafeTransaction()` to retrieve the Safe UI fields `(to, value, data, operation)`. Regular actions use `MultiSendCallOnly`; override `isDelegateCall(uint256 actionIndex)` only for actions that must be encoded as delegatecalls.
+-   Multisig proposal calldata is Safe `multiSend(bytes)` calldata. Use `getSafeTransaction()` to retrieve the Safe UI fields `(to, value, data, operation)`. Regular actions use `MultiSendCallOnly`; override proposal-level `isDelegateCall()` only when every recorded action must be encoded as a delegatecall.
 
 #### `test/timelock`
 

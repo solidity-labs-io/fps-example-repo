@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 import {MockCallOnlyMultisigProposal} from "./MockCallOnlyMultisigProposal.sol";
 import {MockSafeTarget} from "./MockSafeTarget.sol";
 
-contract MockMixedOperationMultisigProposal is MockCallOnlyMultisigProposal {
+contract MockDelegateCallMultisigProposal is MockCallOnlyMultisigProposal {
     bytes32 public delegateSlot;
     bytes32 public delegateValue;
 
@@ -15,11 +15,11 @@ contract MockMixedOperationMultisigProposal is MockCallOnlyMultisigProposal {
     }
 
     function name() public pure override returns (string memory) {
-        return "MIXED_OPERATION_MULTISIG_MOCK";
+        return "DELEGATE_CALL_MULTISIG_MOCK";
     }
 
     function description() public pure override returns (string memory) {
-        return "Mock mixed-operation multisig proposal";
+        return "Mock delegatecall multisig proposal";
     }
 
     function build() public override buildModifier(multisig) {
@@ -28,8 +28,8 @@ contract MockMixedOperationMultisigProposal is MockCallOnlyMultisigProposal {
         target.recordCall(22);
     }
 
-    function isDelegateCall(uint256 actionIndex) public pure override returns (bool) {
-        return actionIndex == 1;
+    function isDelegateCall() public pure override returns (bool) {
+        return true;
     }
 
     function simulate() public override {

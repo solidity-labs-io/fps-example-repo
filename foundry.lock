@@ -3,7 +3,7 @@
     "rev": "5e581ef817464fdb71c4c7ef6bde4c552302d160"
   },
   "lib/forge-proposal-simulator": {
-    "rev": "b37d14f77b2b0c5d4dfea45c1f899c70380a01cf"
+    "rev": "93cc95a223860457e28783f36144d12f39901b8d"
   },
   "lib/forge-proposal-simulator/lib/forge-std": {
     "rev": "bf647bd6046f2f7da30d0c2bf435e5c76a780c1b"
