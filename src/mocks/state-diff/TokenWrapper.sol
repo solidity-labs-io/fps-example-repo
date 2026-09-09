@@ -16,21 +16,11 @@ contract TokenWrapper is Ownable {
     }
 
     function redeemTokens(uint256 tokenAmount) external onlyOwner {
-        require(
-            ERC20(_tokenAddress).balanceOf(msg.sender) >= tokenAmount,
-            "Insufficient token balance"
-        );
+        require(ERC20(_tokenAddress).balanceOf(msg.sender) >= tokenAmount, "Insufficient token balance");
 
-        require(
-            address(this).balance >= tokenAmount,
-            "Insufficient ETH balance in contract"
-        );
+        require(address(this).balance >= tokenAmount, "Insufficient ETH balance in contract");
 
-        ERC20(_tokenAddress).transferFrom(
-            msg.sender,
-            address(this),
-            tokenAmount
-        );
+        ERC20(_tokenAddress).transferFrom(msg.sender, address(this), tokenAmount);
         payable(msg.sender).transfer(tokenAmount);
     }
 }

@@ -17,9 +17,7 @@ contract MultisigPostProposalCheck is Test {
 
         string memory output = string(vm.ffi(inputs));
 
-        MultisigProposal multisigProposal = MultisigProposal(
-            deployCode(output)
-        );
+        MultisigProposal multisigProposal = MultisigProposal(deployCode(output));
         vm.makePersistent(address(multisigProposal));
 
         // Execute proposals

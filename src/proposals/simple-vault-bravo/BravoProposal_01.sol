@@ -54,17 +54,11 @@ contract BravoProposal_01 is GovernorBravoProposal {
         }
     }
 
-    function build()
-        public
-        override
-        buildModifier(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"))
-    {
+    function build() public override buildModifier(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")) {
         /// STATICCALL -- not recorded for the run stage
         address bravoVault = addresses.getAddress("BRAVO_VAULT");
         address token = addresses.getAddress("BRAVO_VAULT_TOKEN");
-        uint256 balance = Token(token).balanceOf(
-            addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")
-        );
+        uint256 balance = Token(token).balanceOf(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"));
 
         Vault(bravoVault).whitelistToken(token, true);
 
@@ -80,10 +74,7 @@ contract BravoProposal_01 is GovernorBravoProposal {
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO");
 
         uint256 balance = token.balanceOf(address(bravoVault));
-        (uint256 amount, ) = bravoVault.deposits(
-            address(token),
-            address(timelock)
-        );
+        (uint256 amount,) = bravoVault.deposits(address(token), address(timelock));
         assertEq(amount, balance);
 
         assertTrue(bravoVault.tokenWhitelist(address(token)));

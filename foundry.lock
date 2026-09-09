@@ -1,0 +1,26 @@
+{
+  "lib/compound-governance": {
+    "rev": "5e581ef817464fdb71c4c7ef6bde4c552302d160"
+  },
+  "lib/forge-proposal-simulator": {
+    "rev": "93cc95a223860457e28783f36144d12f39901b8d"
+  },
+  "lib/forge-proposal-simulator/lib/forge-std": {
+    "rev": "bf647bd6046f2f7da30d0c2bf435e5c76a780c1b"
+  },
+  "lib/forge-std": {
+    "rev": "bf647bd6046f2f7da30d0c2bf435e5c76a780c1b"
+  },
+  "lib/openzeppelin-contracts": {
+    "rev": "bd325d56b4c62c9c5c1aff048c37c6bb18ac0290"
+  },
+  "lib/openzeppelin-contracts/lib/erc4626-tests": {
+    "rev": "8b1d7c2ac248c33c3506b1bff8321758943c5e11"
+  },
+  "lib/openzeppelin-contracts/lib/forge-std": {
+    "rev": "c2236853aadb8e2d9909bbecdc490099519b70a4"
+  },
+  "lib/openzeppelin-contracts/lib/forge-std/lib/ds-test": {
+    "rev": "6da7dd8f7395f83e1fb6fa88a64ba9a030f85d4f"
+  }
+}

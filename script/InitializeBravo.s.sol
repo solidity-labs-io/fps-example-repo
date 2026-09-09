@@ -21,9 +21,7 @@ contract InitializeBravo is MultisigProposal {
     function deploy() public override {
         address governor = addresses.getAddress("PROTOCOL_GOVERNOR");
 
-        address payable timelock = payable(
-            addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")
-        );
+        address payable timelock = payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"));
 
         if (!addresses.isAddressSet("PROTOCOL_GOVERNOR_ALPHA")) {
             // Deploy mock GovernorAlpha
@@ -32,21 +30,17 @@ contract InitializeBravo is MultisigProposal {
             addresses.addAddress("PROTOCOL_GOVERNOR_ALPHA", govAlpha, true);
         }
 
-        Timelock(timelock).executeTransaction(
-            timelock,
-            0,
-            "",
-            abi.encodeWithSignature(
-                "setPendingAdmin(address)",
-                address(governor)
-            ),
-            vm.envUint("ETA")
-        );
+        Timelock(timelock)
+            .executeTransaction(
+                timelock,
+                0,
+                "",
+                abi.encodeWithSignature("setPendingAdmin(address)", address(governor)),
+                vm.envUint("ETA")
+            );
 
         // Initialize GovernorBravo
-        GovernorBravoDelegate(governor)._initiate(
-            addresses.getAddress("PROTOCOL_GOVERNOR_ALPHA")
-        );
+        GovernorBravoDelegate(governor)._initiate(addresses.getAddress("PROTOCOL_GOVERNOR_ALPHA"));
 
         addresses.printJSONChanges();
     }
@@ -62,9 +56,7 @@ contract InitializeBravo is MultisigProposal {
     }
 
     function validate() public view override {
-        Timelock timelock = Timelock(
-            payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"))
-        );
+        Timelock timelock = Timelock(payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")));
 
         // ensure governor bravo is set as timelock admin
         assertEq(timelock.admin(), addresses.getAddress("PROTOCOL_GOVERNOR"));

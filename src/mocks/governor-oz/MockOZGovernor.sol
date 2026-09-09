@@ -5,7 +5,10 @@ import {Governor} from "@openzeppelin/governance/Governor.sol";
 import {GovernorVotes, IVotes} from "@openzeppelin/governance/extensions/GovernorVotes.sol";
 import {GovernorCountingSimple} from "@openzeppelin/governance/extensions/GovernorCountingSimple.sol";
 import {GovernorVotesQuorumFraction} from "@openzeppelin/governance/extensions/GovernorVotesQuorumFraction.sol";
-import {GovernorTimelockControl, TimelockController} from "@openzeppelin/governance/extensions/GovernorTimelockControl.sol";
+import {
+    GovernorTimelockControl,
+    TimelockController
+} from "@openzeppelin/governance/extensions/GovernorTimelockControl.sol";
 
 contract MockOZGovernor is
     Governor,
@@ -14,10 +17,7 @@ contract MockOZGovernor is
     GovernorVotesQuorumFraction,
     GovernorTimelockControl
 {
-    constructor(
-        IVotes _token,
-        TimelockController _timelock
-    )
+    constructor(IVotes _token, TimelockController _timelock)
         Governor("MyGovernor")
         GovernorVotes(_token)
         GovernorVotesQuorumFraction(4)
@@ -36,14 +36,7 @@ contract MockOZGovernor is
         return 0;
     }
 
-    function state(
-        uint256 proposalId
-    )
-        public
-        view
-        override(Governor, GovernorTimelockControl)
-        returns (ProposalState)
-    {
+    function state(uint256 proposalId) public view override(Governor, GovernorTimelockControl) returns (ProposalState) {
         return super.state(proposalId);
     }
 
@@ -66,18 +59,16 @@ contract MockOZGovernor is
         return super._cancel(targets, values, calldatas, descriptionHash);
     }
 
-    function _executor()
-        internal
-        view
-        override(Governor, GovernorTimelockControl)
-        returns (address)
-    {
+    function _executor() internal view override(Governor, GovernorTimelockControl) returns (address) {
         return super._executor();
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(Governor, GovernorTimelockControl) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(Governor, GovernorTimelockControl)
+        returns (bool)
+    {
         return super.supportsInterface(interfaceId);
     }
 }

@@ -17,17 +17,14 @@ contract BravoVaultIntegrationTestSepolia is BravoPostProposalCheck {
 
         governorVault.whitelistToken(address(token), true);
 
-        assertTrue(
-            governorVault.tokenWhitelist(address(token)),
-            "Token should be whitelisted"
-        );
+        assertTrue(governorVault.tokenWhitelist(address(token)), "Token should be whitelisted");
     }
 
     function test_depositToVault() public {
         Vault governorVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO");
         address token = addresses.getAddress("BRAVO_VAULT_TOKEN");
-        (uint256 prevDeposit, ) = governorVault.deposits(token, timelock);
+        (uint256 prevDeposit,) = governorVault.deposits(token, timelock);
         uint256 depositAmount = 100;
 
         vm.startPrank(timelock);
@@ -35,10 +32,7 @@ contract BravoVaultIntegrationTestSepolia is BravoPostProposalCheck {
         Token(token).approve(address(governorVault), depositAmount);
         governorVault.deposit(address(token), depositAmount);
 
-        (uint256 amount, ) = governorVault.deposits(token, timelock);
-        assertTrue(
-            amount == (prevDeposit + depositAmount),
-            "Token should be deposited"
-        );
+        (uint256 amount,) = governorVault.deposits(token, timelock);
+        assertTrue(amount == (prevDeposit + depositAmount), "Token should be deposited");
     }
 }

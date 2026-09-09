@@ -9,6 +9,6 @@ fs_permissions = [{ access = "read", path = "./"}]
 
 [rpc_endpoints]
 localhost = "http://127.0.0.1:8545"
-sepolia = "https://sepolia.drpc.org"
-arbitrum = "${ARB_RPC_URL}"
-ethereum = "https://eth.merkle.io"
+sepolia = "https://ethereum-sepolia-rpc.publicnode.com"
+arbitrum = "https://arb1.arbitrum.io/rpc"
+ethereum = "https://ethereum-rpc.publicnode.com"

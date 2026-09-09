@@ -31,47 +31,27 @@ contract DeployOZGovernor is MultisigProposal {
             executors[0] = address(0);
 
             // Deploy a new TimelockController
-            TimelockController timelock = new TimelockController(
-                60,
-                proposers,
-                executors,
-                dev
-            );
+            TimelockController timelock = new TimelockController(60, proposers, executors, dev);
 
             // Add OZ_GOVERNOR_TIMELOCK address
-            addresses.addAddress(
-                "OZ_GOVERNOR_TIMELOCK",
-                address(timelock),
-                true
-            );
+            addresses.addAddress("OZ_GOVERNOR_TIMELOCK", address(timelock), true);
         }
 
         if (!addresses.isAddressSet("OZ_GOVERNOR_GOVERNANCE_TOKEN")) {
             // Deploy the governance token
-            MockERC20Votes govToken = new MockERC20Votes(
-                "Governance Token",
-                "GOV"
-            );
+            MockERC20Votes govToken = new MockERC20Votes("Governance Token", "GOV");
 
             govToken.mint(dev, 1e21);
 
             // Add OZ_GOVERNOR_GOVERNANCE_TOKEN address
-            addresses.addAddress(
-                "OZ_GOVERNOR_GOVERNANCE_TOKEN",
-                address(govToken),
-                true
-            );
+            addresses.addAddress("OZ_GOVERNOR_GOVERNANCE_TOKEN", address(govToken), true);
         }
 
         if (!addresses.isAddressSet("OZ_GOVERNOR")) {
             // Deploy MockOZGovernor
             MockOZGovernor governor = new MockOZGovernor(
-                MockERC20Votes(
-                    addresses.getAddress("OZ_GOVERNOR_GOVERNANCE_TOKEN")
-                ), // governance token
-                TimelockController(
-                    payable(addresses.getAddress("OZ_GOVERNOR_TIMELOCK"))
-                ) // timelock
+                MockERC20Votes(addresses.getAddress("OZ_GOVERNOR_GOVERNANCE_TOKEN")), // governance token
+                TimelockController(payable(addresses.getAddress("OZ_GOVERNOR_TIMELOCK"))) // timelock
             );
 
             // Add OZ_GOVERNOR address
@@ -79,12 +59,8 @@ contract DeployOZGovernor is MultisigProposal {
         }
 
         // add propose and execute role for governor
-        TimelockController(
-            payable(addresses.getAddress("OZ_GOVERNOR_TIMELOCK"))
-        ).grantRole(
-                keccak256("PROPOSER_ROLE"),
-                addresses.getAddress("OZ_GOVERNOR")
-            );
+        TimelockController(payable(addresses.getAddress("OZ_GOVERNOR_TIMELOCK")))
+            .grantRole(keccak256("PROPOSER_ROLE"), addresses.getAddress("OZ_GOVERNOR"));
 
         addresses.printJSONChanges();
     }
@@ -100,26 +76,14 @@ contract DeployOZGovernor is MultisigProposal {
     }
 
     function validate() public view override {
-        MockERC20Votes govToken = MockERC20Votes(
-            addresses.getAddress("OZ_GOVERNOR_GOVERNANCE_TOKEN")
-        );
+        MockERC20Votes govToken = MockERC20Votes(addresses.getAddress("OZ_GOVERNOR_GOVERNANCE_TOKEN"));
 
         // ensure governance token is minted to deployer address
-        assertEq(
-            govToken.balanceOf(addresses.getAddress("DEPLOYER_EOA")),
-            1e21
-        );
+        assertEq(govToken.balanceOf(addresses.getAddress("DEPLOYER_EOA")), 1e21);
 
-        TimelockController timelock = TimelockController(
-            payable(addresses.getAddress("OZ_GOVERNOR_TIMELOCK"))
-        );
+        TimelockController timelock = TimelockController(payable(addresses.getAddress("OZ_GOVERNOR_TIMELOCK")));
 
         // ensure OZ Governor has been granted proposer role on timelock
-        assertTrue(
-            timelock.hasRole(
-                keccak256("PROPOSER_ROLE"),
-                addresses.getAddress("OZ_GOVERNOR")
-            )
-        );
+        assertTrue(timelock.hasRole(keccak256("PROPOSER_ROLE"), addresses.getAddress("OZ_GOVERNOR")));
     }
 }

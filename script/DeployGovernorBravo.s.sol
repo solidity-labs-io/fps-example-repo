@@ -27,28 +27,17 @@ contract DeployGovernorBravo is MultisigProposal {
             Timelock timelock = new Timelock(deployer, 1);
 
             // Add PROTOCOL_TIMELOCK_BRAVO address
-            addresses.addAddress(
-                "PROTOCOL_TIMELOCK_BRAVO",
-                address(timelock),
-                true
-            );
+            addresses.addAddress("PROTOCOL_TIMELOCK_BRAVO", address(timelock), true);
         }
 
         if (!addresses.isAddressSet("PROTOCOL_GOVERNANCE_TOKEN")) {
             // Deploy the governance token
-            MockERC20Votes govToken = new MockERC20Votes(
-                "Governance Token",
-                "GOV"
-            );
+            MockERC20Votes govToken = new MockERC20Votes("Governance Token", "GOV");
 
             govToken.mint(deployer, 1e21);
 
             // Add PROTOCOL_GOVERNANCE_TOKEN address
-            addresses.addAddress(
-                "PROTOCOL_GOVERNANCE_TOKEN",
-                address(govToken),
-                true
-            );
+            addresses.addAddress("PROTOCOL_GOVERNANCE_TOKEN", address(govToken), true);
         }
 
         if (!addresses.isAddressSet("PROTOCOL_GOVERNOR")) {
@@ -75,10 +64,7 @@ contract DeployGovernorBravo is MultisigProposal {
                 addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"),
                 0,
                 "",
-                abi.encodeWithSignature(
-                    "setPendingAdmin(address)",
-                    addresses.getAddress("PROTOCOL_GOVERNOR")
-                ),
+                abi.encodeWithSignature("setPendingAdmin(address)", addresses.getAddress("PROTOCOL_GOVERNOR")),
                 block.timestamp + 180
             );
 
@@ -96,14 +82,9 @@ contract DeployGovernorBravo is MultisigProposal {
     }
 
     function validate() public view override {
-        MockERC20Votes govToken = MockERC20Votes(
-            addresses.getAddress("PROTOCOL_GOVERNANCE_TOKEN")
-        );
+        MockERC20Votes govToken = MockERC20Votes(addresses.getAddress("PROTOCOL_GOVERNANCE_TOKEN"));
 
         // ensure governance token is minted to deployer address
-        assertEq(
-            govToken.balanceOf(addresses.getAddress("DEPLOYER_EOA")),
-            1e21
-        );
+        assertEq(govToken.balanceOf(addresses.getAddress("DEPLOYER_EOA")), 1e21);
     }
 }

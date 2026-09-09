@@ -2,9 +2,6 @@ name: "Sepolia Integration Tests"
 
 on: [pull_request]
 
-env:
-    FOUNDRY_PROFILE: ci
-
 jobs:
     check:
         strategy:
@@ -25,7 +22,7 @@ jobs:
             - name: Run Forge build
               run: |
                   forge --version
-                  forge build --sizes
+                  forge build
               id: build
 
             - name: Run Forge tests
