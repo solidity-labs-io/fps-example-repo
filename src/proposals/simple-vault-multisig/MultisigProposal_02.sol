@@ -27,17 +27,13 @@ contract MultisigProposal_02 is MultisigProposal {
         super.run();
     }
 
-    function build()
-        public
-        override
-        buildModifier(addresses.getAddress("DEV_MULTISIG"))
-    {
+    function build() public override buildModifier(addresses.getAddress("DEV_MULTISIG")) {
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
         /// STATICCALL -- not recorded for the run stage
         Vault multisigVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
         address token = addresses.getAddress("MULTISIG_TOKEN");
-        (uint256 amount, ) = multisigVault.deposits(address(token), multisig);
+        (uint256 amount,) = multisigVault.deposits(address(token), multisig);
 
         /// CALLS -- mutative and recorded
         multisigVault.withdraw(token, payable(multisig), amount);
@@ -57,7 +53,7 @@ contract MultisigProposal_02 is MultisigProposal {
         uint256 balance = token.balanceOf(address(timelockVault));
         assertEq(balance, 0);
 
-        (uint256 amount, ) = timelockVault.deposits(address(token), multisig);
+        (uint256 amount,) = timelockVault.deposits(address(token), multisig);
         assertEq(amount, 0);
 
         assertEq(token.balanceOf(multisig), 10_000_000e18);

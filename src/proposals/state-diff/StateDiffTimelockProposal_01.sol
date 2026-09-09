@@ -52,21 +52,12 @@ contract StateDiffTimelockProposal_01 is TimelockProposal {
         tokenWrapper.transferOwnership(timelock);
     }
 
-    function build()
-        public
-        override
-        buildModifier(addresses.getAddress("PROTOCOL_TIMELOCK"))
-    {
-        TokenWrapper tokenWrapper = TokenWrapper(
-            addresses.getAddress("TOKEN_WRAPPER")
-        );
+    function build() public override buildModifier(addresses.getAddress("PROTOCOL_TIMELOCK")) {
+        TokenWrapper tokenWrapper = TokenWrapper(addresses.getAddress("TOKEN_WRAPPER"));
         tokenWrapper.mint{value: 10 ether}();
 
         // approve token wrapper to transfer token
-        Token(addresses.getAddress("TOKEN")).approve(
-            address(tokenWrapper),
-            10 ether
-        );
+        Token(addresses.getAddress("TOKEN")).approve(address(tokenWrapper), 10 ether);
         tokenWrapper.redeemTokens(10 ether);
     }
 

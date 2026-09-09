@@ -33,11 +33,7 @@ contract TimelockProposal_01 is TimelockProposal {
         if (!addresses.isAddressSet("TIMELOCK_VAULT")) {
             Vault timelockVault = new Vault();
 
-            addresses.addAddress(
-                "TIMELOCK_VAULT",
-                address(timelockVault),
-                true
-            );
+            addresses.addAddress("TIMELOCK_VAULT", address(timelockVault), true);
 
             timelockVault.transferOwnership(address(timelock));
         }
@@ -82,10 +78,7 @@ contract TimelockProposal_01 is TimelockProposal {
         Token token = Token(addresses.getAddress("TIMELOCK_TOKEN"));
 
         uint256 balance = token.balanceOf(address(timelockVault));
-        (uint256 amount, ) = timelockVault.deposits(
-            address(token),
-            address(timelock)
-        );
+        (uint256 amount,) = timelockVault.deposits(address(token), address(timelock));
         assertEq(amount, balance);
 
         assertTrue(timelockVault.tokenWhitelist(address(token)));

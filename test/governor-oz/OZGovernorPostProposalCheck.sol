@@ -17,9 +17,7 @@ contract OZGovernorPostProposalCheck is Test {
 
         string memory output = string(vm.ffi(inputs));
 
-        OZGovernorProposal ozGovernorproposal = OZGovernorProposal(
-            deployCode(output)
-        );
+        OZGovernorProposal ozGovernorproposal = OZGovernorProposal(deployCode(output));
         vm.makePersistent(address(ozGovernorproposal));
 
         // Execute proposals

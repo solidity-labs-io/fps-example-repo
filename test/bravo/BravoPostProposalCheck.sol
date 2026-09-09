@@ -17,9 +17,7 @@ contract BravoPostProposalCheck is Test {
 
         string memory output = string(vm.ffi(inputs));
 
-        GovernorBravoProposal bravoProposal = GovernorBravoProposal(
-            deployCode(output)
-        );
+        GovernorBravoProposal bravoProposal = GovernorBravoProposal(deployCode(output));
         vm.makePersistent(address(bravoProposal));
 
         // Execute proposals

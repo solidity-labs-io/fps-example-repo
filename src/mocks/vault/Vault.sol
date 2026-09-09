@@ -12,8 +12,7 @@ contract Vault is Ownable, Pausable {
         uint256 timestamp;
     }
 
-    mapping(address _token => mapping(address _user => Deposit _deposit))
-        public deposits;
+    mapping(address _token => mapping(address _user => Deposit _deposit)) public deposits;
     mapping(address _token => bool _isWhitelisted) public tokenWhitelist;
 
     constructor() Ownable() Pausable() {}
@@ -34,22 +33,13 @@ contract Vault is Ownable, Pausable {
         IERC20(token).transferFrom(msg.sender, address(this), amount);
     }
 
-    function withdraw(
-        address token,
-        address payable to,
-        uint256 amount
-    ) external whenNotPaused {
+    function withdraw(address token, address payable to, uint256 amount) external whenNotPaused {
         require(tokenWhitelist[token], "Vault: token must be active");
         require(amount > 0, "Vault: amount must be greater than 0");
         require(token != address(0), "Vault: token must not be 0x0");
+        require(deposits[token][msg.sender].amount >= amount, "Vault: insufficient balance");
         require(
-            deposits[token][msg.sender].amount >= amount,
-            "Vault: insufficient balance"
-        );
-        require(
-            deposits[token][msg.sender].timestamp + LOCK_PERIOD <
-                block.timestamp,
-            "Vault: lock period has not passed"
+            deposits[token][msg.sender].timestamp + LOCK_PERIOD < block.timestamp, "Vault: lock period has not passed"
         );
 
         Deposit storage userDeposit = deposits[token][msg.sender];

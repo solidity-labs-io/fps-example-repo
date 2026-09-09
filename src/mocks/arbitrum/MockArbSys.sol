@@ -6,11 +6,8 @@ pragma solidity ^0.8.0;
 contract MockArbSys {
     uint256 public ticketId;
 
-    function sendTxToL1(
-        address _l1Target,
-        bytes memory _data
-    ) external payable returns (uint256) {
-        (bool success, ) = _l1Target.call(_data);
+    function sendTxToL1(address _l1Target, bytes memory _data) external payable returns (uint256) {
+        (bool success,) = _l1Target.call(_data);
         require(success, "Arbsys: sendTxToL1 failed");
         return ++ticketId;
     }

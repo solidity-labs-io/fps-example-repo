@@ -17,10 +17,7 @@ contract TimelockVaultIntegrationTestSepolia is TimelockPostProposalCheck {
 
         timelockVault.whitelistToken(address(token), true);
 
-        assertTrue(
-            timelockVault.tokenWhitelist(address(token)),
-            "Token should be whitelisted"
-        );
+        assertTrue(timelockVault.tokenWhitelist(address(token)), "Token should be whitelisted");
     }
 
     function test_depositToVault() public {
@@ -28,10 +25,7 @@ contract TimelockVaultIntegrationTestSepolia is TimelockPostProposalCheck {
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK");
         address token = addresses.getAddress("TIMELOCK_TOKEN");
 
-        (uint256 prevDeposits, ) = timelockVault.deposits(
-            address(token),
-            timelock
-        );
+        (uint256 prevDeposits,) = timelockVault.deposits(address(token), timelock);
         uint256 depositAmount = 100;
 
         vm.startPrank(timelock);
@@ -39,10 +33,7 @@ contract TimelockVaultIntegrationTestSepolia is TimelockPostProposalCheck {
         Token(token).approve(address(timelockVault), depositAmount);
         timelockVault.deposit(address(token), depositAmount);
 
-        (uint256 amount, ) = timelockVault.deposits(address(token), timelock);
-        assertTrue(
-            amount == prevDeposits + depositAmount,
-            "Token should be deposited"
-        );
+        (uint256 amount,) = timelockVault.deposits(address(token), timelock);
+        assertTrue(amount == prevDeposits + depositAmount, "Token should be deposited");
     }
 }
